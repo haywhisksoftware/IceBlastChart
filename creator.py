@@ -1,5 +1,4 @@
-def generate_grid():
-  steps = lambda: xrange(1000, 2000, 100)
+def generate_grid(step_func):
   thresholds_no_scepter = [[], [], []]
   thresholds_with_scepter = [[], [], []]
   #for the shatter to take effect, the target hero needs to be lower than
@@ -13,7 +12,7 @@ def generate_grid():
   level_indexes = [0, 1, 2]
   magic_resistance_multiplyer = 0.75 #25% magic damage reduction
 
-  for max_hp in steps():
+  for max_hp in step_func():
     for level in level_indexes:
       total_damage = magic_resistance_multiplyer * (burst_damages[level] + dps_duration[level] * dps_damage[level])
       total_damage_scepter = magic_resistance_multiplyer * (burst_damages[level] + dps_duration_scepter[level] * dps_damage[level])
@@ -22,12 +21,37 @@ def generate_grid():
       hp_with_scepter = hp_thresh + total_damage_scepter
       thresholds_no_scepter[level].append(hp_no_scepter)
       thresholds_with_scepter[level].append(hp_with_scepter)
-
+  thresholds_no_scepter = zip(thresholds_no_scepter[0], thresholds_no_scepter[1], thresholds_no_scepter[2])
+  thresholds_with_scepter = zip(thresholds_with_scepter[0], thresholds_with_scepter[1], thresholds_with_scepter[2])
+  
   print thresholds_no_scepter
   print thresholds_with_scepter
+  return thresholds_no_scepter, thresholds_with_scepter
 
-def generate_html():
-  pass
+def generate_html(without_scepter, with_scepter, step_func):
+  format_string = "<tr><td>%(max_hp)d</td><td>%(l1hp)f</td><td>%(l2hp)f</td><td>%(l3hp)f</td></tr>"
+  without_list = []
+  with_list = []
+  i = 0
+  for step in step_func():
+    this_step_with = with_scepter[i]
+    this_step_without = without_scepter[i]
+    without_dict = {'max_hp':step, 'l1hp':this_step_without[0], 'l2hp': this_step_without[1], 'l3hp': this_step_without[2]}
+    with_dict = {'max_hp':step, 'l1hp':this_step_with[0], 'l2hp': this_step_with[1], 'l3hp': this_step_with[2]}
+    
+    without_string = format_string % without_dict
+    with_string = format_string % with_dict
+    
+    without_list.append(without_string)
+    with_list.append(with_string)
+    i += 1
+  
+  return "\n".join(without_list), "\n".join(with_list)
 
 if __name__ == "__main__":
-  generate_grid()
+  step_func = lambda: xrange(1000, 2001, 100)
+  thresholds_no_scepter, thresholds_with_scepter = generate_grid(step_func)
+
+  without_string, with_string = generate_html(thresholds_no_scepter, thresholds_with_scepter, step_func)
+  print without_string
+  print with_string
