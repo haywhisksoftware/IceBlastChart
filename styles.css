@@ -1,12 +1,24 @@
+* {
+  box-sizing: border-box;
+}
 body {
-  max-width: 800px;
+  max-width: 768px;
 }
 
-.left-section {
-  float: left;
+.row:after {
+  float: clear;
+  content: "";
+  display: block;
 }
-.right-section {
-  float: right;
+
+[class*='-section'] {
+  float: left;
+  padding: 15px;
+}
+@media only screen and (min-width: 768px) {
+  [class*='-section'] {
+    width: 50%;
+  }
 }
 table {
   border: 1px solid black;
