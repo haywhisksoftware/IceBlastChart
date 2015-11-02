@@ -48,10 +48,26 @@ def generate_html(without_scepter, with_scepter, step_func):
   
   return "\n".join(without_list), "\n".join(with_list)
 
+def modify_html(without_scepter_rows, with_scepter_rows):
+  without_scepter_line = "{{no_scepter}}"
+  with_scepter_line = "{{with_scepter}}"
+  with open("template.html", "r") as input_file:
+    with open("index.html", "w") as output_file:
+      for line in input_file:
+        stripped_line = line.strip()
+        if stripped_line == without_scepter_line:
+          output_file.write(without_scepter_rows)
+        elif stripped_line == with_scepter_line:
+          output_file.write(with_scepter_rows)
+        else:
+          output_file.write(line)
+
 if __name__ == "__main__":
-  step_func = lambda: xrange(1000, 2001, 100)
+  step_func = lambda: xrange(750, 4001, 250)
   thresholds_no_scepter, thresholds_with_scepter = generate_grid(step_func)
+
 
   without_string, with_string = generate_html(thresholds_no_scepter, thresholds_with_scepter, step_func)
   print without_string
   print with_string
+  modify_html(without_string, with_string)
