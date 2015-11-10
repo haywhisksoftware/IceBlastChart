@@ -6,7 +6,7 @@ body {
 }
 
 .row:after {
-  float: clear;
+  clear: both;
   content: "";
   display: block;
 }
