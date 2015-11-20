@@ -1,3 +1,4 @@
+"""Script to generate nice tables of how healthy a target has to be to survive an ICE BLAST."""
 def generate_grid(step_func):
   thresholds_no_scepter = [[], [], []]
   thresholds_with_scepter = [[], [], []]
@@ -19,8 +20,9 @@ def generate_grid(step_func):
       hp_thresh = max_hp * shatter_thresholds[level]
       hp_no_scepter = hp_thresh + total_damage
       hp_with_scepter = hp_thresh + total_damage_scepter
-      thresholds_no_scepter[level].append(hp_no_scepter)
-      thresholds_with_scepter[level].append(hp_with_scepter)
+      #round up
+      thresholds_no_scepter[level].append(int(round(hp_no_scepter)))
+      thresholds_with_scepter[level].append(int(round(hp_with_scepter)))
   thresholds_no_scepter = zip(thresholds_no_scepter[0], thresholds_no_scepter[1], thresholds_no_scepter[2])
   thresholds_with_scepter = zip(thresholds_with_scepter[0], thresholds_with_scepter[1], thresholds_with_scepter[2])
   
@@ -29,7 +31,7 @@ def generate_grid(step_func):
   return thresholds_no_scepter, thresholds_with_scepter
 
 def generate_html(without_scepter, with_scepter, step_func):
-  format_string = "<tr><td>%(max_hp)d</td><td>%(l1hp)f</td><td>%(l2hp)f</td><td>%(l3hp)f</td></tr>"
+  format_string = "<tr><td>%(max_hp)d</td><td>%(l1hp)d</td><td>%(l2hp)d</td><td>%(l3hp)d</td></tr>"
   without_list = []
   with_list = []
   i = 0
@@ -63,7 +65,7 @@ def modify_html(without_scepter_rows, with_scepter_rows):
           output_file.write(line)
 
 if __name__ == "__main__":
-  step_func = lambda: xrange(750, 4001, 250)
+  step_func = lambda: xrange(800, 4001, 100)
   thresholds_no_scepter, thresholds_with_scepter = generate_grid(step_func)
 
 
