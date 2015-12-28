@@ -1,9 +1,11 @@
 * {
   box-sizing: border-box;
+  background: white;
 }
 body {
   padding: 5px;
   max-width: 768px;
+  color: black;
 }
 
 .row:after {
